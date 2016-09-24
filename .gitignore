@@ -4,3 +4,4 @@ chromedriver
 *.html
 .project
 .pydevproject
+*.log

@@ -18,6 +18,7 @@ import binascii
 import logging
 from selenium.webdriver.support.ui import Select
 import cgi # cgi.parse_header
+import datetime
 
 def login_audible(driver, options, username, password, base_url, lang):
     # Step 1
@@ -345,8 +346,12 @@ if __name__ == "__main__":
                       default="/tmp/audible",
                       help="Download directory (must exist)",)
     
-    logging.basicConfig(format='%(levelname)s(#%(lineno)d):%(message)s', level=logging.INFO)
-    
+    dt = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+
+    logging.basicConfig(format='%(levelname)s(#%(lineno)d):%(message)s', 
+        level=logging.INFO, filename="./audible-download-%s.log" % (dt))
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
     (options, args) = parser.parse_args()
     
     if not options.dw_dir.endswith(os.path.sep):
