@@ -1,35 +1,38 @@
-# LICENSE: 
-# Based on code from https://github.com/inAudible-NG/audible-activator,
-# therefore license is GNU GPL
-# (https://github.com/inAudible-NG/audible-activator/blob/master/LICENSE)
-#
-# HOWTO: 
-# (sudo apt-get install python-pip)
-# pip install requests
-# pip install selenium
-# Download and extract the correct ChromeDriver zip file from 
-#   https://sites.google.com/a/chromium.org/chromedriver/downloads
-#   to script folder
-#
-# Default download dir is /tmp/audible, change with -w, unsure if
-# spaces are supported
-#
-# You are free to minimize the browser window while downloading, but do
-# not click or navigate in it
-# 
-# The script supports a lazy format of restart. REMEMBER to delete
-# <download dir>/admhelper if you restart
-#
-#
-# KNOWN BUGS:
-#
-# Sometimes lists a unresonable number of pages of books, i.e:
-# "INFO(#282):Found 47 pages of books" when you expected
-# "INFO(#282):Found 15 pages of books" 
-# FIX: Ctrl+x while "INFO(#286):Scrolling to bottom of page because javascript"
-# And delete admhelper is found in download dir
-#
-# Download error KeyError: 'content-disposition'
-# You probably hit "Download limit for untargeted content reached."
-# FIX: No idea, probably wait 30 min and restart (delete admhelper from
-# download dir before starting)
+Based on code from https://github.com/inAudible-NG/audible-activator
+
+HOWTO list.py: 
+(sudo apt-get install python-pip)
+pip install requests
+pip install selenium
+Download and extract the correct ChromeDriver zip file from 
+  https://sites.google.com/a/chromium.org/chromedriver/downloads
+  to script folder
+
+Default download dir is /tmp/audible, change with -w, unsure if
+spaces are supported
+
+You are free to minimize the browser window while downloading, but do
+not click or navigate in it
+
+The script supports a lazy format of restart. REMEMBER to delete
+<download dir>/admhelper if you restart
+
+
+KNOWN BUGS:
+
+Sometimes lists a unresonable number of pages of books, i.e:
+"INFO(#282):Found 47 pages of books" when you expected
+"INFO(#282):Found 15 pages of books" 
+FIX: Ctrl+x while "INFO(#286):Scrolling to bottom of page because javascript"
+And delete admhelper is found in download dir
+
+Download error KeyError: 'content-disposition'
+You probably hit "Download limit for untargeted content reached."
+FIX: No idea, probably wait 30 min and restart (delete admhelper from
+download dir before starting)
+
+HOWTO loop_remove_drm.sh:
+Script for removing drm from all audible *.aax-files in a folder.
+Requires a ffmpeg new enough to support -activation_bytes avaliable
+Configure the variables ACTIVATION_BYTES, FROM, TO and FFMPEG to
+fit your system/need before running
