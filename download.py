@@ -165,7 +165,9 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     logging.info("Size: %s" % size)
     
     path = "%s%s" % (options.dw_dir, filename)
-    
+
+    logging.info("Book %s of 20 on page %s of %s" % (book, page, maxpage))
+
     if os.path.isfile(path):
         logging.info("File %s exist, checking size", path)
         if int(size) == os.path.getsize(path):
@@ -175,7 +177,7 @@ def download_file(datafile, scraped_title, book, page, maxpage):
             logging.warning("File %s had unexpected size, downloading" % (path,))
     else:
         logging.info("File %s does not exist, downloading" % (path,))
-    logging.info("Book %s of 20 on page %s of %s" % (book, page, maxpage))
+
     if True:
         opener = LyingFancyURLopener() 
         local_filename, headers = opener.retrieve(url, path, reporthook=print_progress)
