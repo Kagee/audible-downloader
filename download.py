@@ -8,7 +8,8 @@ import time
 from selenium import webdriver
 from urllib import urlencode
 from urlparse import urlparse, parse_qs
-from urllib import urlretrieve #, FancyURLopener
+import urlparse
+from urllib import urlretrieve, FancyURLopener
 import urllib2
 import hashlib
 import base64
@@ -84,6 +85,11 @@ class HeadRequest(urllib2.Request):
     def get_method(self):
         return "HEAD"
 
+class LyingFancyURLopener(FancyURLopener):        
+    def __init__(self):
+        self.version = 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601'
+        FancyURLopener.__init__(self)
+
 
 def wait_for_download_or_die(datafile):
     retry = 0
@@ -131,7 +137,10 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     
     params = {}
     for param in ["user_id","product_id","codec", "awtype","cust_id"]:
-        params[param] = dw_options[param][0]
+        if dw_options[param][0] == "LC_64_22050_stereo":
+            params[param] = "LC_64_22050_ster"
+        else:
+            params[param] = dw_options[param][0]
     
     url_parts = list(urlparse.urlparse(url))
     query = dict(urlparse.parse_qsl(url_parts[4]))
@@ -144,8 +153,7 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     
     logging.info("Downloading file data")
     request_head = HeadRequest(url)
-    # request_head.add_header('User-Agent', 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601')
-
+    request_head.add_header('User-Agent', 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601')
     head = urllib2.urlopen(request_head)
     val, par = cgi.parse_header(head.info().dict['content-disposition']) 
     filename = par['filename'].split("_")[0]
@@ -168,10 +176,25 @@ def download_file(datafile, scraped_title, book, page, maxpage):
         logging.info("File %s does not exist, downloading" % (path,))
     logging.info("Book %s of 20 on page %s of %s" % (book, page, maxpage))
     if True:
-        #opener = urllib.FancyURLopener({}) 
-        #opener.version = 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601'
-        #opener.retrieve(url, path, print_progress)
-        urlretrieve(url, path, print_progress)
+        opener = LyingFancyURLopener() 
+        local_filename, headers = opener.retrieve(url, path, reporthook=print_progress)
+        #local_filename, headers = urlretrieve(url, path, reporthook=print_progress)
+        
+        #import pdb; pdb.set_trace()
+        
+        #filename = ""
+        #try:
+        #    val, par = cgi.parse_header(headers.dict['content-disposition']) 
+        #    filename = par['filename'].split("_")[0]
+        #    filename = filename + "." +  par['filename'].split(".")[-1]
+        #except KeyError: 
+        #    import pdb; pdb.set_trace()
+        
+        #logging.info("Filename: %s" % filename)
+        #logging.info("Size: %s" % size)
+        
+        #path = "%s%s" % (options.dw_dir, filename)
+        #os.rename(local_filename,path)
         logging.info("Completed download of '%s' to %s" % (title, path))
     else:
         logging.info("Completed download of '%s' to %s (not really)" % (title, path))
@@ -256,12 +279,12 @@ def configure_audible_library(driver):
         sys.exit(1)
 
     # Comment out this in hope of not hitting download limit as fast
-    #if not ('adbl-sort-down' in driver.find_element_by_id("SortByLength").get_attribute("class")):
-    #    logging.info("Sorting downloads by shortest to longest")
-    #    driver.find_element_by_id("SortByLength").click()
-    #    time.sleep(10)
-    #else:
-    #    logging.info("Downloads were already sorted by shortest to longest, continuing")
+    if not ('adbl-sort-down' in driver.find_element_by_id("SortByLength").get_attribute("class")):
+        logging.info("Sorting downloads by shortest to longest")
+        driver.find_element_by_id("SortByLength").click()
+        time.sleep(10)
+    else:
+        logging.info("Downloads were already sorted by shortest to longest, continuing")
 
 def loop_pages(logging, driver):
     maxpage = 0
