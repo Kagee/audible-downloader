@@ -24,7 +24,7 @@ Sometimes lists a unresonable number of pages of books, i.e:
 "INFO(#282):Found 47 pages of books" when you expected
 "INFO(#282):Found 15 pages of books" 
 FIX: Ctrl+x while "INFO(#286):Scrolling to bottom of page because javascript"
-And delete admhelper is found in download dir
+and delete admhelper if found in download dir
 
 Download error KeyError: 'content-disposition'
 You probably hit "Download limit for untargeted content reached."
