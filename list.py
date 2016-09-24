@@ -230,10 +230,12 @@ def configure_audible_library(driver):
     logging.info("Opening Audible library")
     driver.get("https://www.audible.com/lib")
     time.sleep(2)
-    logging.info("Selecting books from 'All Time'")
-    select = Select(driver.find_element_by_id("adbl_time_filter"))
-    select.select_by_value("all")
-    time.sleep(2)
+    
+    # Comment out this in hope of not hitting download limit as fast
+    #logging.info("Selecting books from 'All Time'")
+    #select = Select(driver.find_element_by_id("adbl_time_filter"))
+    #select.select_by_value("all")
+    #time.sleep(2)
 
     # Make sure we are getting the ENHANCED format
     # u'ENHANCED' u'MP332' u'ACELP16' u'ACELP85'
