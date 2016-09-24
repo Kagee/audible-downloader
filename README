@@ -1,6 +1,6 @@
 Based on code from https://github.com/inAudible-NG/audible-activator
 
-HOWTO list.py: 
+HOWTO download.py: 
 (sudo apt-get install python-pip)
 pip install requests
 pip install selenium
