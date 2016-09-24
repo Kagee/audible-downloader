@@ -14,8 +14,7 @@ spaces are supported
 You are free to minimize the browser window while downloading, but do
 not click or navigate in it
 
-The script supports a lazy format of restart. REMEMBER to delete
-<download dir>/admhelper if you restart
+The script supports a lazy format of restart.
 
 
 KNOWN BUGS:
@@ -24,12 +23,12 @@ Sometimes lists a unresonable number of pages of books, i.e:
 "INFO(#282):Found 47 pages of books" when you expected
 "INFO(#282):Found 15 pages of books" 
 FIX: Ctrl+x while "INFO(#286):Scrolling to bottom of page because javascript"
-and delete admhelper if found in download dir
+and restart
 
 Download error KeyError: 'content-disposition'
 You probably hit "Download limit for untargeted content reached."
-FIX: No idea, probably wait 30 min and restart (delete admhelper from
-download dir before starting)
+FIX: This was probably fixed by starting to lie in our
+User-Agent. If not, probably wait 30 min and restart
 
 HOWTO loop_remove_drm.sh:
 Script for removing drm from all audible *.aax-files in a folder.
