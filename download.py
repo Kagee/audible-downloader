@@ -336,6 +336,10 @@ if __name__ == "__main__":
     lang = options.lang
     
     driver = configure_browser(options)
+    try:
+        wait_for_file_delete("%s%s" % (options.dw_dir, "admhelper"))
+    except OSError:
+        pass
     
     login_audible(driver, options, username, password, base_url, lang)
     configure_audible_library(driver)
