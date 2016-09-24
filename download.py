@@ -235,7 +235,7 @@ def configure_audible_library(driver):
     logging.info("Selecting books from 'All Time'")
     select = Select(driver.find_element_by_id("adbl_time_filter"))
     select.select_by_value("all")
-    time.sleep(2)
+    time.sleep(5)
 
     # Make sure we are getting the ENHANCED format
     # u'ENHANCED' u'MP332' u'ACELP16' u'ACELP85'
