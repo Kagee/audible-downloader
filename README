@@ -36,3 +36,5 @@ Script for removing drm from all audible *.aax-files in a folder.
 Requires a ffmpeg new enough to support -activation_bytes avaliable
 Configure the variables ACTIVATION_BYTES, FROM, TO and FFMPEG to
 fit your system/need before running
+You find ACTIVATION_BYTES by using 
+https://github.com/inAudible-NG/audible-activator
