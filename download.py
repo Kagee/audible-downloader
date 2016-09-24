@@ -7,19 +7,15 @@ import sys
 import time
 from selenium import webdriver
 from urllib import urlencode
-from urlparse import urlparse, parse_qsl, parse_qs
-import urlparse
-from urllib import urlencode, urlretrieve
+from urlparse import urlparse, parse_qs
+from urllib import urlretrieve #, FancyURLopener
 import urllib2
 import hashlib
 import base64
-import requests
 import os
-#import common
 import binascii
 import logging
 from selenium.webdriver.support.ui import Select
-import re
 import cgi # cgi.parse_header
 
 def login_audible(driver, options, username, password, base_url, lang):
@@ -84,7 +80,7 @@ def configure_browser(options):
     
     return driver
 
-class HeadRequest(urllib2.Request):
+class HeadRequest(urllib2.Request):        
     def get_method(self):
         return "HEAD"
 
@@ -147,7 +143,10 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     logging.info("Book URL: %s" % url)
     
     logging.info("Downloading file data")
-    head = urllib2.urlopen(HeadRequest(url))
+    request_head = HeadRequest(url)
+    # request_head.add_header('User-Agent', 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601')
+
+    head = urllib2.urlopen(request_head)
     val, par = cgi.parse_header(head.info().dict['content-disposition']) 
     filename = par['filename'].split("_")[0]
     filename = filename + "." +  par['filename'].split(".")[-1]
@@ -169,6 +168,9 @@ def download_file(datafile, scraped_title, book, page, maxpage):
         logging.info("File %s does not exist, downloading" % (path,))
     logging.info("Book %s of 20 on page %s of %s" % (book, page, maxpage))
     if True:
+        #opener = urllib.FancyURLopener({}) 
+        #opener.version = 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601'
+        #opener.retrieve(url, path, print_progress)
         urlretrieve(url, path, print_progress)
         logging.info("Completed download of '%s' to %s" % (title, path))
     else:
