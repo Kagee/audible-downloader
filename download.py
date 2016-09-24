@@ -347,6 +347,16 @@ if __name__ == "__main__":
                       dest="dw_dir",
                       default="/tmp/audible",
                       help="Download directory (must exist)",)
+    parser.add_option("--user",
+                      action="store",
+                      dest="username",
+                      default=None,
+                      help="Username (optional, will be asked for if not provied)",)
+    parser.add_option("--password",
+                      action="store",
+                      dest="password",
+                      default=None,
+                      help="Password (optional, will be asked for if not provied)",)
     
     dt = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
@@ -359,9 +369,14 @@ if __name__ == "__main__":
     if not options.dw_dir.endswith(os.path.sep):
         options.dw_dir += os.path.sep
     
-     
-    username = raw_input("Username: ")
-    password = getpass("Password: ")
+    if not options.username:
+        username = raw_input("Username: ")
+    else:
+        username = options.username
+    if not options.password:
+        password = getpass("Password: ")
+    else:
+        password = options.password
     
     base_url = 'https://www.audible.com/'
     base_url_license = 'https://www.audible.com/'
