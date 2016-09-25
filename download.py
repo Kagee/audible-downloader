@@ -19,6 +19,7 @@ import logging
 from selenium.webdriver.support.ui import Select
 import cgi # cgi.parse_header
 import datetime
+import socket
 
 def login_audible(driver, options, username, password, base_url, lang):
     # Step 1
@@ -155,7 +156,26 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     logging.info("Downloading file data")
     request_head = HeadRequest(url)
     request_head.add_header('User-Agent', 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601')
-    head = urllib2.urlopen(request_head)
+    
+    tries = 0
+    head_ok = False
+    while head_ok == False:
+        try:
+            head = urllib2.urlopen(request_head)
+            head_ok = True
+        except urllib2.HTTPError as e_head:
+            if tries < 5: 
+                tries = tries + 1
+                time.sleep(60)
+            else:
+                raise e_head
+        except socket.error as se:
+            if tries < 5: 
+                tries = tries + 1
+                time.sleep(60)
+            else:
+                raise e_head
+            
     val, par = cgi.parse_header(head.info().dict['content-disposition']) 
     filename = par['filename'].split("_")[0]
     filename = filename + "." +  par['filename'].split(".")[-1]
@@ -172,6 +192,7 @@ def download_file(datafile, scraped_title, book, page, maxpage):
         logging.info("File %s exist, checking size", path)
         if int(size) == os.path.getsize(path):
             logging.info("File %s has correct size, not downloading" % (path,))
+            time.sleep(60) # sleep a minute to not be throttled
             return False
         else:
             logging.warning("File %s had unexpected size, downloading" % (path,))
