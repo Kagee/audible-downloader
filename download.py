@@ -275,9 +275,13 @@ def download_files_on_page(driver, page, maxpage, debug):
     logging.info("Downloaded %s books from this page" % (books_downloaded,))
     return books_downloaded
 
-def configure_audible_library(driver):
+def configure_audible_library(driver, lang):
     logging.info("Opening Audible library")
-    driver.get("https://www.audible.com/lib")
+    lib_url = "https://www.audible.com/lib"
+    if lang != "us":
+        lib_url = lib_url.replace('.com', "." + lang)
+
+    driver.get(lib_url)
     time.sleep(2)
     
     
@@ -389,6 +393,14 @@ if __name__ == "__main__":
     
     if not options.dw_dir.endswith(os.path.sep):
         options.dw_dir += os.path.sep
+
+    if not os.path.exists(options.dw_dir):
+        logging.info("download directory doesn't exist, creating " + options.dw_dir)
+        os.makedirs(options.dw_dir)
+
+    if not os.access(options.dw_dir, os.W_OK):
+        logging.error("download directory " + options.dw_dir + " not writable")
+        sys.exit(1)
     
     if not options.username:
         username = raw_input("Username: ")
@@ -410,7 +422,7 @@ if __name__ == "__main__":
         pass
     
     login_audible(driver, options, username, password, base_url, lang)
-    configure_audible_library(driver)
+    configure_audible_library(driver, lang)
     loop_pages(logging, driver)
 
     logging.info("Awating input, master: ")
