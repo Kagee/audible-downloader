@@ -101,7 +101,7 @@ def wait_for_download_or_die(datafile):
         retry = retry + 1
         time.sleep(dw_sleep)
     if not os.path.isfile(datafile):
-        logging.critical("Chrome used more than %s seconds to download %s, something is wrong, exiting" % (datafile,dw_sleep*retry,))
+        logging.critical("Chrome used more than %s seconds to download %s, something is wrong, exiting" % (dw_sleep*retry, datafile))
         sys.exit(1)
 
 def print_progress(block_count, block_size, total_size):
