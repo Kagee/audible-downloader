@@ -41,7 +41,7 @@ def login_audible(driver, options, username, password, base_url, lang):
         'openid.return_to':base_url + 'player-auth-token?playerType=software&playerId=%s=&bp_ua=y&playerModel=Desktop&playerManufacturer=Audible' % (player_id)}
     query_string = urlencode(payload)
     url = login_url + query_string
-    logging.info("Opening audible.com")
+    logging.info("Opening Audible for language %s" % (lang))
     driver.get(base_url + '?ipRedirectOverride=true')
     logging.info("Logging in to Amazon/Audible")
     driver.get(url)
@@ -128,35 +128,35 @@ def download_file(datafile, scraped_title, book, page, maxpage):
     with open(datafile) as f:
         logging.info("Parsing %s, creating download url" % datafile)
         lines = f.readlines()
-        
+
     dw_options = parse_qs(lines[0])
     title = dw_options["title"][0]
     if title != scraped_title:
         logging.info("Found real title: %s" % (title,))
     logging.info("Parsed data for book '%s'" % (title,))
-    
+
     url = dw_options["assemble_url"][0]
-    
+
     params = {}
     for param in ["user_id","product_id","codec", "awtype","cust_id"]:
         if dw_options[param][0] == "LC_64_22050_stereo":
             params[param] = "LC_64_22050_ster"
         else:
             params[param] = dw_options[param][0]
-    
+
     url_parts = list(urlparse.urlparse(url))
     query = dict(urlparse.parse_qsl(url_parts[4]))
     query.update(params)
-    
+
     url_parts[4] = urlencode(query)
-    
+
     url = urlparse.urlunparse(url_parts)
     logging.info("Book URL: %s" % url)
-    
+
     logging.info("Downloading file data")
     request_head = HeadRequest(url)
     request_head.add_header('User-Agent', 'Audible ADM 6.6.0.19;Windows Vista Service Pack 1 Build 7601')
-    
+
     tries = 0
     head_ok = False
     while head_ok == False:
@@ -175,15 +175,15 @@ def download_file(datafile, scraped_title, book, page, maxpage):
                 time.sleep(60)
             else:
                 raise e_head
-            
+
     val, par = cgi.parse_header(head.info().dict['content-disposition']) 
     filename = par['filename'].split("_")[0]
     filename = filename + "." +  par['filename'].split(".")[-1]
     size = head.info().dict['content-length']
-    
+
     logging.info("Filename: %s" % filename)
     logging.info("Size: %s" % size)
-    
+
     path = "%s%s" % (options.dw_dir, filename)
 
     logging.info("Book %s of 20 on page %s of %s" % (book, page, maxpage))
@@ -238,7 +238,7 @@ def wait_for_file_delete(datafile):
 
 def download_files_on_page(driver, page, maxpage, debug):
     books_downloaded = 0
-    
+
     trs = driver.find_elements_by_tag_name("tr")
     for tr in trs:
         titles = tr.find_elements_by_name("tdTitle")
@@ -258,9 +258,9 @@ def download_files_on_page(driver, page, maxpage, debug):
                             time.sleep(1)
                             datafile = "%s%s" % (options.dw_dir, "admhelper")
                             wait_for_download_or_die(datafile)
-                            
+
                             logging.info("Datafile downloaded")
-        
+
                             books_downloaded = books_downloaded + 1
                             download_file(datafile, title, books_downloaded, page, maxpage)
                             wait_for_file_delete(datafile)
@@ -269,7 +269,7 @@ def download_files_on_page(driver, page, maxpage, debug):
                     books_downloaded = books_downloaded + 1
                     logging.info("Debug, no download")
                     time.sleep(1)
-                                
+
                 logging.info("looping through all download in spesific TR complete")
         #logging.info("looping through all tdTitle in spesific TR complete")
     logging.info("Downloaded %s books from this page" % (books_downloaded,))
@@ -283,8 +283,7 @@ def configure_audible_library(driver, lang):
 
     driver.get(lib_url)
     time.sleep(2)
-    
-    
+
     logging.info("Selecting books from 'All Time'")
     select = Select(driver.find_element_by_id("adbl_time_filter"))
     select.select_by_value("all")
@@ -315,22 +314,22 @@ def configure_audible_library(driver, lang):
         logging.info("Downloads were already sorted by shortest to longest, continuing")
 
 def loop_pages(logging, driver):
-    maxpage = 0
+    maxpage = 1
     for link in driver.find_elements_by_class_name("adbl-page-link"):
         maxpage = max(maxpage, int(link.text))
-    
+
     books_downloaded = 0
-    
+
     logging.info("Found %s pages of books" % maxpage)
     for pagenumz in range(maxpage):
         pagenum = pagenumz + 1
-        
-        logging.info("Scrolling to bottom of page because javascript")
+
+        logging.info("Scrolling to bottom of page to force loading of content")
         for x in range(3):
             # Page is not loaded before we scroll
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
-        
+
         logging.info("Downloading books on page %s" % (pagenum,))
         books_downloaded = books_downloaded + download_files_on_page(driver, pagenum, maxpage, debug=False)
         time.sleep(5)
@@ -382,7 +381,7 @@ if __name__ == "__main__":
                       dest="password",
                       default=None,
                       help="Password (optional, will be asked for if not provied)",)
-    
+
     dt = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
 
     logging.basicConfig(format='%(levelname)s(#%(lineno)d):%(message)s', 
@@ -390,7 +389,7 @@ if __name__ == "__main__":
     logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     (options, args) = parser.parse_args()
-    
+
     if not options.dw_dir.endswith(os.path.sep):
         options.dw_dir += os.path.sep
 
@@ -401,7 +400,7 @@ if __name__ == "__main__":
     if not os.access(options.dw_dir, os.W_OK):
         logging.error("download directory " + options.dw_dir + " not writable")
         sys.exit(1)
-    
+
     if not options.username:
         username = raw_input("Username: ")
     else:
@@ -410,21 +409,21 @@ if __name__ == "__main__":
         password = getpass("Password: ")
     else:
         password = options.password
-    
+
     base_url = 'https://www.audible.com/'
     base_url_license = 'https://www.audible.com/'
     lang = options.lang
-    
+
     driver = configure_browser(options)
     try:
         wait_for_file_delete("%s%s" % (options.dw_dir, "admhelper"))
     except OSError:
         pass
-    
+
     login_audible(driver, options, username, password, base_url, lang)
     configure_audible_library(driver, lang)
     loop_pages(logging, driver)
 
-    logging.info("Awating input, master: ")
+    logging.info("Jobs done!")
     #driver.quit()
     #quit()
