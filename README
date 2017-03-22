@@ -16,6 +16,19 @@ not click or navigate in it
 
 The script supports a lazy format of restart.
 
+IMPORTANT:
+
+We trick Audible to think that we want to download files
+using Audible Download Manager. If "software verification"
+is on, Audible apparently tries to detect if you have
+it installed, and will fail. To get proper downloads,
+turn off software verification in your Audible settings.
+
+.com:
+Hi, <yourname> => Account Details => Software verification
+
+.de:
+Hallo, <yourname> => Mein Konto => Software-Überprüfung
 
 KNOWN BUGS:
 
