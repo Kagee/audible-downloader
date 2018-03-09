@@ -13,9 +13,8 @@ for FROMPATH in $FROM/*.aax; do
   TOPATH="$TO/$(basename "$FROMPATH" | cut -d'_' -f 1).mp4"
   if [ ! -e "$TOPATH" ]; then
     echo "$FROMPATH => $TOPATH"
-    echo $FFMPEG -loglevel error  -activation_bytes "$ACTIVATION_BYTES" -i "$FROMPATH" -vn -c:a copy "$TOPATH"
+    $FFMPEG -loglevel error  -activation_bytes "$ACTIVATION_BYTES" -i "$FROMPATH" -vn -c:a copy "$TOPATH"
   else
-    echo $FFMPEG -loglevel error  -activation_bytes "$ACTIVATION_BYTES" -i "$FROMPATH" -vn -c:a copy "$TOPATH"
     echo "$TOPATH found, skipping"
   fi
 done
