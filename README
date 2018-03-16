@@ -46,6 +46,7 @@ User-Agent. If not, probably wait 30 min and restart
 HOWTO loop_remove_drm.sh:
 Script for removing drm from all audible *.aax-files in a folder.
 Requires a ffmpeg new enough to support -activation_bytes avaliable
+Requires exiftool to be installed "brew install exiftool"
 Configure the variables ACTIVATION_BYTES, FROM, TO and FFMPEG to
 fit your system/need before running
 You find ACTIVATION_BYTES by using 
