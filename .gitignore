@@ -1,6 +1,6 @@
 *.swp
 audible-activator.py
-chromedriver
+chromedriver*
 *.html
 .project
 .pydevproject
