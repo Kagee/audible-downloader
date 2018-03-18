@@ -390,6 +390,10 @@ if __name__ == "__main__":
 
     (options, args) = parser.parse_args()
 
+    # Convert path to abspath (creates path Chrome can use on Windows)
+    # Must happen before we add separator
+    options.dw_dir = os.path.abspath(options.dw_dir)
+
     if not options.dw_dir.endswith(os.path.sep):
         options.dw_dir += os.path.sep
 
