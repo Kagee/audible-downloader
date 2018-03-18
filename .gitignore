@@ -5,3 +5,4 @@ chromedriver*
 .project
 .pydevproject
 *.log
+*.conf

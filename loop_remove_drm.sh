@@ -1,9 +1,21 @@
 #! /bin/bash
+CONFIG="./loop_remove_drm.conf"
+if [ ! -f "$CONFIG" ]; then
+ echo 'ACTIVATION_BYTES="<your personal activation bytes>"' > "$CONFIG"
+ echo 'FROM="<absolute path to input folder>"' >> "$CONFIG"
+ echo 'TO="<absolute path to output folder>"' >> "$CONFIG"
+ echo "FFMPEG=\"<path to ffmpeg that supports "\
+     "-activation_bytes, possibly only 'ffmpeg'\"" >> "$CONFIG"
+ echo "Please edit $CONFIG, then run script again"
+ exit
+fi 
 
-ACTIVATION_BYTES="<add your bytes here>"
-FROM="/tmp/audible"
-TO="/tmp/audible-no-drm"
-FFMPEG="ffmpeg" # Path to ffmpeg that supports -activation_bytes
+source "$CONFIG"
+
+if [ "<your personal activation bytes>" == "$ACTIVATION_BYTES" ]; then
+    echo "You didn't edit $CONFIG as i told you, did you?"
+exit 2
+fi
 
 # admhelper might be here if we aborted the download
 COUNT_FROM="$(ls "$FROM" | grep -v admhelper | wc -l)"
