@@ -5,7 +5,8 @@ FROM="/tmp/audible"
 TO="/tmp/audible-no-drm"
 FFMPEG="ffmpeg" # Path to ffmpeg that supports -activation_bytes
 
-COUNT_FROM="$(ls "$FROM" | wc -l)"
+# admhelper might be here if we aborted the download
+COUNT_FROM="$(ls "$FROM" | grep -v admhelper | wc -l)"
 echo "$COUNT_FROM"
 
 # only aax, something fails with .aa, and i'm not up to debugging
