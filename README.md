@@ -52,11 +52,10 @@ Download error ```KeyError: 'content-disposition'```
 # HOWTO loop_remove_drm.sh
 
 Script for removing drm from all audible *.aax-files in a folder.
-Requires a ffmpeg new enough to support -activation_bytes avaliable
-Requires exiftool to be installed. 
-Mac: "brew install exiftool"
-Linux (apt): sudo apt install libimage-exiftool-perl
-Configure the variables ACTIVATION_BYTES, FROM, TO and FFMPEG to
-fit your system/need before running
-You find ACTIVATION_BYTES by using 
-https://github.com/inAudible-NG/audible-activator
+* Requires a ffmpeg new enough to support -activation_bytes avaliable
+* Requires exiftool to be installed. 
+  * Mac: "brew install exiftool"
+  * Linux (apt): sudo apt install libimage-exiftool-perl
+* A config file will be created the first time you run the script
+  * Configure the variables ACTIVATION_BYTES, FROM, TO and FFMPEG to fit your system
+    * You find ACTIVATION_BYTES by using https://github.com/inAudible-NG/audible-activator
