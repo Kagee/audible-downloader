@@ -34,7 +34,8 @@ turn off software verification in your Audible settings.
 ### .de:
 * Hallo, <yourname>
   * Mein Konto
-    * Software-Überprüfung
+    * Einstellungen
+      * Software-Überprüfung
 
 # KNOWN BUGS
 ## Unresonable number of pages of books
